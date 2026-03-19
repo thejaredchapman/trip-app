@@ -177,6 +177,7 @@ export interface Activity {
   icon: string;
   category: 'sightseeing' | 'food' | 'transport' | 'entertainment' | 'shopping' | 'culture' | 'nature';
   contact?: ContactInfo;
+  cost?: string;
 }
 
 export interface DayPlan {
@@ -373,10 +374,6 @@ export const ITINERARY: DayPlan[] = [
         id: 'a1-4', time: '3:30 PM', title: 'Afternoon Tea at The Orangery', description: 'Traditional English tea experience', icon: '🫖', category: 'food',
         contact: { phone: '+44-20-3166-6113', url: 'https://www.orangerykensingtonpalace.co.uk', address: 'Kensington Palace, Kensington Gardens, London W8 4PX, UK' },
       },
-      {
-        id: 'a1-5', time: '7:30 PM', title: 'Dracula', description: 'Noël Coward Theatre — STALLS Row Q, Seats 15–18 (4 tickets, £340 total). Order ID: TFH26Q5. Paperless mobile tickets sent closer to performance.', icon: '🧛', category: 'entertainment',
-        contact: { address: 'Noël Coward Theatre, 85-88 St Martin\'s Lane, London WC2N 4AU' },
-      },
     ],
   },
   {
@@ -439,6 +436,10 @@ export const ITINERARY: DayPlan[] = [
       {
         id: 'a3-5', time: '7:30 PM', title: 'Dinner in Le Marais', description: 'Parisian neighborhood dining', icon: '🥖', category: 'food',
         contact: { address: 'Le Marais, 75004 Paris, France' },
+      },
+      {
+        id: 'a3-6', time: '7:30 PM', title: 'Dracula', description: 'Noël Coward Theatre — Section STALLS Row Q, Seats 15–18 (4× Standard Ticket @ £85.00 each, £340 total). Order ID: TFH26Q5. Paperless mobile tickets sent closer to performance.', icon: '🧛', category: 'entertainment',
+        contact: { address: 'Noël Coward Theatre, 85-88 St Martin\'s Lane, London WC2N 4AU' },
       },
     ],
   },

@@ -25,6 +25,9 @@ const DayDetail: React.FC<Props> = ({ dayIndex }) => {
   const [newTime, setNewTime] = useState('');
   const [newDesc, setNewDesc] = useState('');
   const [newCategory, setNewCategory] = useState<Activity['category']>('sightseeing');
+  const [newLocation, setNewLocation] = useState('');
+  const [newCost, setNewCost] = useState('');
+  const [newUrl, setNewUrl] = useState('');
   const [editingAccom, setEditingAccom] = useState(false);
   const [editingNotes, setEditingNotes] = useState(false);
   const [accomValue, setAccomValue] = useState(day.accommodation || '');
@@ -33,22 +36,29 @@ const DayDetail: React.FC<Props> = ({ dayIndex }) => {
   if (!day) return null;
 
   const presentTravelers = TRAVELERS.filter((t) => t.presentDays.includes(day.day));
+  const arrivingTravelers = TRAVELERS.filter((t) => day.date.includes(t.arrivalDate));
   const isParis = day.city.toLowerCase().includes('paris');
   const cityColor = isParis ? '#f4a261' : '#e94560';
   const cityFlag = isParis ? '🇫🇷' : '🇬🇧';
 
   const handleAddActivity = () => {
     if (!newTitle.trim()) return;
+    const contact = (newLocation || newUrl) ? { address: newLocation || undefined, url: newUrl || undefined } : undefined;
     addActivity(dayIndex, {
       time: newTime || undefined,
       title: newTitle,
       description: newDesc || undefined,
       icon: EMOJI_MAP[newCategory] || '📌',
       category: newCategory,
+      contact,
+      cost: newCost || undefined,
     });
     setNewTitle('');
     setNewTime('');
     setNewDesc('');
+    setNewLocation('');
+    setNewCost('');
+    setNewUrl('');
     setShowAddForm(false);
   };
 
@@ -205,6 +215,63 @@ const DayDetail: React.FC<Props> = ({ dayIndex }) => {
         )}
       </div>
 
+      {/* Arrival Banners */}
+      {arrivingTravelers.length > 0 && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16 }}>
+          {arrivingTravelers.map((t, i) => (
+            <motion.div
+              key={t.id}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1, type: 'spring', damping: 25 }}
+              style={{
+                background: `linear-gradient(135deg, ${t.color}18, ${t.colorLight}10)`,
+                border: `1px solid ${t.color}30`,
+                borderRadius: 14,
+                padding: '12px 16px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 12,
+              }}
+            >
+              <div
+                style={{
+                  width: 38,
+                  height: 38,
+                  borderRadius: '50%',
+                  background: `linear-gradient(135deg, ${t.color}, ${t.colorLight})`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#fff',
+                  fontWeight: 700,
+                  fontSize: 12,
+                  flexShrink: 0,
+                  boxShadow: `0 2px 8px ${t.color}40`,
+                }}
+              >
+                {t.avatarInitials}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
+                  <span style={{ color: c.text, fontWeight: 700, fontSize: 14 }}>{t.name}</span>
+                  <span style={{ background: `${t.color}20`, color: t.color, fontSize: 10, fontWeight: 600, padding: '2px 8px', borderRadius: 10 }}>
+                    ARRIVING
+                  </span>
+                </div>
+                <div style={{ color: c.textTertiary, fontSize: 12, lineHeight: 1.5 }}>
+                  <span>{t.airline} · {t.routeOut}</span>
+                  <br />
+                  <span style={{ color: t.colorLight, fontWeight: 600 }}>{t.arrivalTime}</span>
+                  <span> at {t.arrivalAirport}</span>
+                </div>
+              </div>
+              <span style={{ fontSize: 24, flexShrink: 0 }}>{t.emoji}</span>
+            </motion.div>
+          ))}
+        </div>
+      )}
+
       {/* Activities List */}
       <div style={{ background: c.bgCard, borderRadius: 16, padding: '8px 14px', border: `1px solid ${c.borderLight}` }}>
         <AnimatePresence>
@@ -224,6 +291,11 @@ const DayDetail: React.FC<Props> = ({ dayIndex }) => {
                       <input value={newTitle} onChange={(e) => setNewTitle(e.target.value)} placeholder="Activity name" style={{ background: c.bgInput, border: `1px solid ${c.borderInput}`, borderRadius: 8, padding: '10px 12px', color: c.text, fontSize: 13, outline: 'none', flex: 1 }} />
                     </div>
                     <input value={newDesc} onChange={(e) => setNewDesc(e.target.value)} placeholder="Description (optional)" style={{ background: c.bgInput, border: `1px solid ${c.borderInput}`, borderRadius: 8, padding: '10px 12px', color: c.text, fontSize: 13, outline: 'none' }} />
+                    <input value={newLocation} onChange={(e) => setNewLocation(e.target.value)} placeholder="Location / Address (optional)" style={{ background: c.bgInput, border: `1px solid ${c.borderInput}`, borderRadius: 8, padding: '10px 12px', color: c.text, fontSize: 13, outline: 'none' }} />
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <input value={newCost} onChange={(e) => setNewCost(e.target.value)} placeholder="Cost (optional)" style={{ background: c.bgInput, border: `1px solid ${c.borderInput}`, borderRadius: 8, padding: '10px 12px', color: c.text, fontSize: 13, outline: 'none', width: 140 }} />
+                      <input value={newUrl} onChange={(e) => setNewUrl(e.target.value)} placeholder="Website link (optional)" style={{ background: c.bgInput, border: `1px solid ${c.borderInput}`, borderRadius: 8, padding: '10px 12px', color: c.text, fontSize: 13, outline: 'none', flex: 1 }} />
+                    </div>
                     <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                       {CATEGORY_OPTIONS.map((cat) => (
                         <button key={cat} onClick={() => setNewCategory(cat)} style={{ background: newCategory === cat ? `${cityColor}30` : c.bgSubtle, border: newCategory === cat ? `1px solid ${cityColor}` : `1px solid ${c.border}`, borderRadius: 20, padding: '4px 12px', color: newCategory === cat ? cityColor : c.textTertiary, fontSize: 11, cursor: 'pointer', textTransform: 'capitalize' }}>

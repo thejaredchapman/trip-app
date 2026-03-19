@@ -86,19 +86,24 @@ const ActivityCard: React.FC<Props> = ({ activity, index, onUpdate, onRemove, da
                 </p>
               )}
 
-              {activity.contact && (
+              {(activity.contact || activity.cost) && (
                 <div style={{ margin: '6px 0 0 28px', display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                  {activity.contact.phone && (
+                  {activity.cost && (
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: 'rgba(39,174,96,0.1)', border: '1px solid rgba(39,174,96,0.25)', borderRadius: 8, padding: '3px 10px', color: '#27ae60', fontSize: 11, fontWeight: 600 }}>
+                      <span style={{ fontSize: 12 }}>💰</span> {activity.cost}
+                    </span>
+                  )}
+                  {activity.contact?.phone && (
                     <a href={`tel:${activity.contact.phone}`} onClick={(e) => e.stopPropagation()} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: `${categoryColor}10`, border: `1px solid ${categoryColor}25`, borderRadius: 8, padding: '3px 10px', color: categoryColor, fontSize: 11, fontWeight: 500, textDecoration: 'none', transition: 'background 0.2s' }}>
                       <span style={{ fontSize: 12 }}>📞</span> {activity.contact.phone}
                     </a>
                   )}
-                  {activity.contact.url && (
+                  {activity.contact?.url && (
                     <a href={activity.contact.url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: `${categoryColor}10`, border: `1px solid ${categoryColor}25`, borderRadius: 8, padding: '3px 10px', color: categoryColor, fontSize: 11, fontWeight: 500, textDecoration: 'none', transition: 'background 0.2s' }}>
                       <span style={{ fontSize: 12 }}>🔗</span> Website
                     </a>
                   )}
-                  {activity.contact.address && (
+                  {activity.contact?.address && (
                     <button onClick={(e) => { e.stopPropagation(); setShowMap(true); }} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: `${categoryColor}10`, border: `1px solid ${categoryColor}25`, borderRadius: 8, padding: '3px 10px', color: categoryColor, fontSize: 11, fontWeight: 500, textDecoration: 'none', transition: 'background 0.2s', cursor: 'pointer', fontFamily: 'inherit' }}>
                       <span style={{ fontSize: 12 }}>📍</span> {activity.contact.address}
                     </button>
